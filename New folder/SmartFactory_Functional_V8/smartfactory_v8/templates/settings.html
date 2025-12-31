@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}System Configuration{% endblock %}
+{% block content %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="glass-card" style="padding: 10px; background: rgba(99, 102, 241, 0.2); border: 1px solid #6366f1; margin-bottom: 20px;">
+      {% for message in messages %}
+        <p style="margin: 0; color: #fff;">ℹ️ {{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="grid-2">
+    <div class="glass-card">
+        <h3>Performance Thresholds</h3>
+        <form action="{{ url_for('update_settings') }}" method="POST">
+            <label>Plant / Unit Name</label>
+            <input type="text" name="plant_name" value="{{ s.plant_name }}" required>
+            
+            <label>Low Efficiency Alert Threshold (%)</label>
+            <input type="number" name="threshold_eff" value="{{ s.threshold_eff }}" step="0.1" required>
+            
+            <label>Standard Shift Duration (Hours)</label>
+            <input type="number" name="shift_hours" value="{{ s.shift_hours }}" step="0.5" required>
+            
+            <button type="submit" class="btn btn-glow" style="width:100%; justify-content:center; margin-top:20px;">
+                Save Configuration
+            </button>
+        </form>
+    </div>
+
+    <div class="glass-card">
+        <h3 style="color:#ef4444;">Danger Zone</h3>
+        <p style="font-size:13px; color:#94a3b8; margin-bottom:20px;">
+            Resetting the system will delete all historical production logs and alerts. 
+            This action cannot be undone. Use this before a new Hackathon demo.
+        </p>
+        
+        <form action="{{ url_for('reset_data') }}" method="POST" onsubmit="return confirm('Are you sure you want to wipe all data?');">
+            <button type="submit" class="btn btn-danger" style="width:100%; justify-content:center;">
+                ⚠️ Factory Reset
+            </button>
+        </form>
+        
+        <div style="margin-top:30px; padding:15px; background:rgba(255,255,255,0.05); border-radius:8px;">
+            <h4 style="margin:0 0 10px 0;">System Info</h4>
+            <p style="font-size:13px; color:#94a3b8; margin:5px 0;">Version: <strong>v8.0.0 (Functional)</strong></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

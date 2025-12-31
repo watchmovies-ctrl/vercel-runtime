@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Machine Configuration{% endblock %}
+{% block content %}
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="glass-card" style="padding: 10px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; margin-bottom: 20px;">
+      {% for message in messages %}
+        <p style="margin: 0; color: #fff;">✓ {{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<div class="grid-2">
+    <!-- ADD FORM -->
+    <div class="glass-card">
+        <h3 style="margin-top:0;">Add New Machine</h3>
+        <form action="{{ url_for('add_machine') }}" method="POST">
+            <label>Machine ID / Name</label>
+            <input type="text" name="name" placeholder="e.g. LATHE-05" required>
+            
+            <label>Machine Type</label>
+            <select name="type">
+                <option>CNC Milling</option>
+                <option>Hydraulic Press</option>
+                <option>Packaging Line</option>
+                <option>Laser Cutter</option>
+                <option>3D Printer</option>
+            </select>
+            
+            <label>Capacity (Units/Hr)</label>
+            <input type="number" name="capacity" value="100" required>
+            
+            <button type="submit" class="btn btn-glow" style="width:100%; justify-content:center;">
+                + Deploy Machine
+            </button>
+        </form>
+    </div>
+
+    <!-- LIST -->
+    <div class="glass-card">
+        <h3 style="margin-top:0;">Fleet Management</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in machines %}
+                <tr>
+                    <td><strong>{{ m.name }}</strong></td>
+                    <td style="color:var(--text-muted);">{{ m.type }}</td>
+                    <td>
+                        <form action="{{ url_for('toggle_machine', id=m.id) }}" method="POST" style="display:inline;">
+                            <button class="status-badge {% if m.status == 'Active' %}status-Good{% else %}status-Warning{% endif %}" style="border:none; cursor:pointer;">
+                                {{ m.status }}
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('delete_machine', id=m.id) }}" method="POST">
+                            <button class="btn btn-danger" style="padding: 4px 10px; font-size:11px;">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

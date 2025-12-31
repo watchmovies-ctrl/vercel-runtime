@@ -1,0 +1,1 @@
+console.log('SmartFactory V8 Loaded');
